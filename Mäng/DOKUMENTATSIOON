@@ -1,0 +1,15 @@
+Tsau!
+Lugu selline, et ma olen omadega praegu mäel ning otustasin, et hakkan prjektiga pihta. Mulle see mäng15 ikka väga meeldis,
+mistõttu otsustasin siis vahest natuke egoistlikult selle ära valida.
+
+Igastahes siia võiks kirjutada igakord kui me mingi funktsionaalsuse lisame või tahame lisada. Pooleldi endale, et pärast
+saaks tulla ja vaadata mis täpselt kunagi tegin. Teiseks seetõttu, et saaksime planeerida kes mida ja kuidas programmeerib.
+
+Praegu on MVP valmis. Peamised probleemid.
+*Mängimiselamus on vastik.
+    -Pole tagasisidet arengu kohta. Aeg? Lugeda käikude arvu?
+    -Liikumine tekitab epilepsiat.
+    -Mingi efekt, kui kõik on lõpuks oma kohale jõudnud.
+*Mäng pole alati lahenduv.
+    -Segamiseks mitte nii juhuslik algoritm?
+*Programmeerimine ei näe välja eriti OOPilik. Vaja rohkem klasse.
