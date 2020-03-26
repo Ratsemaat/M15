@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Laud {
 
     private String[][] kivid;
@@ -75,9 +77,8 @@ public class Laud {
                 System.out.println("Vigane sisend. Liigutamiseks on wasd");
                 break;
         }
-
     }
     public boolean onLahendatud(){
-        return(kivid.equals(new String[][]{{"1","2","3","4"},{"5","6","7","8"},{"9","10","11","12"},{"13","14","15","16"}}));
+        return(Arrays.deepEquals(kivid, new String[][]{{"1", "2", "3", "4"}, {"5", "6", "7", "8"}, {"9", "10", "11", "12"}, {"13", "14", "15", " "}}));
     }
 }

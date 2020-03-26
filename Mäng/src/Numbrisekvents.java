@@ -37,8 +37,7 @@ public class Numbrisekvents {
                 }
             }
         }
-        if (inv_loendur%2==0) return tühja_Koha_rida%2!=1;
-        else return tühja_Koha_rida%2==0;
+        return((inv_loendur+tühja_Koha_rida)%2!=0);
     }
 
     public boolean onLahenduv(String[] järjestus){//https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/

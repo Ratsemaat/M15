@@ -7,9 +7,10 @@ saaks tulla ja vaadata mis täpselt kunagi tegin. Teiseks seetõttu, et saaksime
 
 Praegu on MVP valmis. Peamised probleemid.
 *Mängimiselamus on vastik.
-    -Pole tagasisidet arengu kohta. Aeg? Lugeda käikude arvu?
-    -Liikumine tekitab epilepsiat.
-    -Mingi efekt, kui kõik on lõpuks oma kohale jõudnud.
-*Mäng pole alati lahenduv.
-    -Segamiseks mitte nii juhuslik algoritm?
-*Programmeerimine ei näe välja eriti OOPilik. Vaja rohkem klasse.
+    -Liikumine tekitab epilepsiat.//Veitsa vähem nüüdseks
+    -Mingi efekt, kui kõik on lõpuks oma kohale jõudnud. Lisasin aja ja lisasin konsooli 16 kiviga laehdnatud laua.
+
+*Programmeerimine ei näe välja eriti OOPilik. Vajab rohkem klasse.
+
+Neljapäevaks mulle on küll. Mina olen selle tasemega rahul ehk võiks ära saata. Kui tunned, et tahad midagi veel lisada, siis
+ pane hullu. Minu poolt tehtud osasse tuleks lisada veel kommetaare ohtralt juurde, kuid tegelen sellega homme/nv.
