@@ -3,16 +3,17 @@ import java.io.Reader;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args){
-        Laud juhuslik =new Laud();
-        juhuslik.kuvaLaud();
+    public static void main(String[] args) {
 
-    while(true) {
+        Numbrisekvents juhuslikJärjestus = new Numbrisekvents();
+        Laud mängulaud = new Laud(juhuslikJärjestus);
+
         Scanner sc = new Scanner(System.in);
+        mängulaud.kuvaLaud();
         System.out.println("Sisesta liikumissuund: (w/a/s/d)");
-        String liikumissuund = sc.nextLine();
-        System.out.println(liikumissuund);
-        juhuslik.liigutaKivi(liikumissuund);
-    }
+        while(true){
+            String liikumissuund = sc.nextLine();
+            mängulaud.liigutaKivi(liikumissuund);
+            }
     }
 }
