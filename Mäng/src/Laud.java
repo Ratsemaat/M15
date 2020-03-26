@@ -35,7 +35,7 @@ public class Laud {
      * meetod tagastab maatriksi, kus on vastavas suunas liikumine ära tehtud.
      */
     public void liigutaKivi(String suund){
-
+        System.out.print("\n\n\n\n\n\n\n"); //NB! Kui Win PowerShellis mängida siis oli vahel ilus!
         switch (suund) {
             case "s":
                 if (tühiKohtX == 3) System.out.println("Alt pole elementi võtta");
