@@ -30,16 +30,19 @@ public class Main {
         System.out.println("-------------");
         System.out.println("Lahedatud");
 
-        double lahendamisAeg = (System.currentTimeMillis()-algus)/1000.0; //Sekundites.
+        long lõppAeg=System.currentTimeMillis();
+        double lahendamisAeg = (lõppAeg-algus)/1000.0; //Sekundites.
         if (lahendamisAeg<=60.0){
             System.out.println("Aega kulus: "+ lahendamisAeg+" sekundit!");
         }
         else if(lahendamisAeg>=120.0)  {
-            System.out.println("Aega kulus: "+ (Math.round(lahendamisAeg/60))+" minutit " +
+            System.out.println("Aega kulus: "+ (Math.floor(lahendamisAeg/60))+" minutit " +
                     "ja "+(Math.round(lahendamisAeg-Math.round(lahendamisAeg/60)*60))+" sekundit!");
         }
         else {
             System.out.println("Aega kulus: 1 minut ja "+ (lahendamisAeg-60)+" sekundit!");
         }
+        Edetabel edetabel= new Edetabel();
+        edetabel.edetabel(lõppAeg-algus);
     }
 }
