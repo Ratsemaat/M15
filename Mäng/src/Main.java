@@ -31,6 +31,7 @@ public class Main {
         System.out.println("Lahedatud");
 
         long lõppAeg=System.currentTimeMillis();
+
         double lahendamisAeg = (lõppAeg-algus)/1000.0; //Sekundites.
         if (lahendamisAeg<=60.0){
             System.out.println("Aega kulus: "+ lahendamisAeg+" sekundit!");

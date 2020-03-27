@@ -1,5 +1,6 @@
 ---E-D-E-T-A-B-E-L---
 mn:sk:mil	Mängija
 02:21:494	Ferindand
+08:17:328	Trintsu Trullam
 09:31:112	Joonas
 --L-Õ-P-P--

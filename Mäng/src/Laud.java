@@ -32,7 +32,7 @@ public class Laud {
 
     //Meetod liigutab antud suunast asuva kivi tühja kohta.
     public void liigutaKivi(String suund){
-        System.out.print("\n\n\n\n\n\n\n"); //NB! Kui Win PowerShellis mängida siis oli vahel ilus!
+        System.out.print("\n\n\n\n\n\n\n"); //Selleks, et cmd-s või windows PowerShell-is näeks väikeses aknas hea välja.
         switch (suund) {
             case "s":
                 if (tühiKohtX == 3) System.out.println("Alt pole elementi võtta");
