@@ -1,7 +1,7 @@
+//Klassi numbrisekvents põhiline ülesanne on anda sobiv järjestus, et mäng oleks lahenduv.
 public class Numbrisekvents {
-
     private String[] järjestus;
-
+    //Konstruktor juhusliku lahenudva laua loomiseks
     public Numbrisekvents(){
         String[] ajutineJärjestus = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9",
                 "10", "11", "12", "13", "14", "15", " "};
@@ -19,12 +19,17 @@ public class Numbrisekvents {
         while (!onLahenduv(ajutineJärjestus));
         järjestus=ajutineJärjestus;
     }
-
+    //Konstruktor, millega saab luua konkreetseid mängulaudu. Meie oma programmis seda ei kasuta, kuid
+    // kasulik, kui kasutaja soovib mingit konkreetset järjestust proovida lahedndada.
     public Numbrisekvents(String[] järjestus) {
         this.järjestus = järjestus;
+        //Lubab luua mittelahenduvaid sekventse, kuid hoiatab.
+        if(onLahenduv(järjestus)){
+            System.out.println("NB! See pole lahenduv järjestus");
+        }
     }
-
-    public boolean onLahenduv(){//https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+    //Abifunktsioon. kontrollib kas vastav järjestus onLahenduv
+    public static boolean onLahenduv(String[] järjestus){//https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
         int tühja_Koha_rida=0;
         int inv_loendur = 0;
         for (int i = 0; i < 15 ; i++) {
@@ -37,24 +42,6 @@ public class Numbrisekvents {
                 }
             }
         }
-        return((inv_loendur+tühja_Koha_rida)%2!=0);
-    }
-
-    public boolean onLahenduv(String[] järjestus){//https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-        int tühja_Koha_rida=0;
-        int inv_loendur = 0;
-        for (int i = 0; i < 15 ; i++) {
-            for (int j = i+1; j < 16; j++) {
-                if (järjestus[i].equals(" ")|| järjestus[j].equals(" ")){
-                    tühja_Koha_rida = i/4;
-                }
-                else if (Integer.parseInt(järjestus[i])>Integer.parseInt(järjestus[j])){
-                    inv_loendur++;
-                }
-            }
-        }
-        System.out.println(inv_loendur);
-        System.out.println(tühja_Koha_rida);
         return((inv_loendur+tühja_Koha_rida)%2!=0);
     }
 
