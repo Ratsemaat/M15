@@ -36,7 +36,7 @@ public class Main {
             System.out.println("Aega kulus: "+ lahendamisAeg+" sekundit!");
         }
         else if(lahendamisAeg>=120.0)  {
-            System.out.println("Aega kulus: "+ (Math.floor(lahendamisAeg/60))+" minutit " +
+            System.out.println("Aega kulus: "+ (int)(Math.floor(lahendamisAeg/60))+" minutit " +
                     "ja "+(Math.round(lahendamisAeg-Math.round(lahendamisAeg/60)*60))+" sekundit!");
         }
         else {
