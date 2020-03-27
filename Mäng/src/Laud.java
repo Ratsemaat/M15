@@ -1,18 +1,19 @@
 import java.util.Arrays;
 
+//Klass laud on põhiline üksus antud programmis. See võtab numbrisekventsi ning vastavalt sellele paneb nupud lauale.
+//Selle peal liigutatakse kivisid ja vaadatakse kas mäng on lahendatud või mitte.
 public class Laud {
 
     private String[][] kivid;
     private int tühiKohtX;
     private int tühiKohtY;
 
-    public Laud(Numbrisekvents kivide_järjekord) {//Konstruktor, juhusliku väljaga mängulaua loomiseks.
-        //Viimaks salvestame genereeritud jada 4*4 maatriksina.
+    public Laud(Numbrisekvents kivide_järjekord) {
         String[] järjestus = kivide_järjekord.getJärjestus();
-
+        //Salvestab tühja koha asukoha
         tühiKohtX=kivide_järjekord.getTühi_koht()[0];
         tühiKohtY=kivide_järjekord.getTühi_koht()[1];
-
+        //Loob mängulaua kivide asetuse
         this.kivid = new String[][]{{järjestus[0], järjestus[1], järjestus[2], järjestus[3]},
                 {järjestus[4], järjestus[5], järjestus[6], järjestus[7]},
                 {järjestus[8], järjestus[9], järjestus[10], järjestus[11]},
@@ -29,11 +30,7 @@ public class Laud {
     }
 
 
-    /**Meetod liigutab tühjast kohast vastavas suunas asuva kivi tühja kohta
-     *
-     * @param suund kujul a/s/d/w, mille alusel liigutame vwastavat kivi
-     * meetod tagastab maatriksi, kus on vastavas suunas liikumine ära tehtud.
-     */
+    //Meetod liigutab antud suunast asuva kivi tühja kohta.
     public void liigutaKivi(String suund){
         System.out.print("\n\n\n\n\n\n\n"); //NB! Kui Win PowerShellis mängida siis oli vahel ilus!
         switch (suund) {
@@ -78,6 +75,7 @@ public class Laud {
                 break;
         }
     }
+    //kontrollib kas on lahedatud
     public boolean onLahendatud(){
         return(Arrays.deepEquals(kivid, new String[][]{{"1", "2", "3", "4"}, {"5", "6", "7", "8"}, {"9", "10", "11", "12"}, {"13", "14", "15", " "}}));
     }
