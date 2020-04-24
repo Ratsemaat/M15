@@ -1,31 +1,38 @@
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static javafx.scene.paint.Color.rgb;
 
 public class Laud extends Application {
+    private static  boolean segatud =false;
+    private static boolean käib = false;
+
     public static void main(String[] args) {
         launch(args);
     }
     @Override
     public void start(Stage peaLava) {
+
+        //Laud ja kivid
         GridPane laud = new GridPane();
-        Scene stseen = new Scene(laud,240,300);
+        Scene stseen = new Scene(laud);
+        peaLava.setScene(stseen);
+        peaLava.sizeToScene();
         Button n1 = new Button("1");
         Button n2 = new Button("2");
         Button n3 = new Button("3");
@@ -43,37 +50,79 @@ public class Laud extends Application {
         Button n15 = new Button("15");
         Button n16 = new Button("");
         Button sega = new Button("Sega");
+        sega.fontProperty().bind(n1.fontProperty());
         Button[] nupud = new Button[]{n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16};
 
-        laud.add(nupud[0], 0, 0);
-        laud.add(nupud[1], 1, 0);
-        laud.add(nupud[2], 2, 0);
-        laud.add(nupud[3], 3, 0);
-        laud.add(nupud[4], 0, 1);
-        laud.add(nupud[5], 1, 1);
-        laud.add(nupud[6], 2, 1);
-        laud.add(nupud[7], 3, 1);
-        laud.add(nupud[8], 0, 2);
-        laud.add(nupud[9], 1, 2);
-        laud.add(nupud[10], 2, 2);
-        laud.add(nupud[11], 3, 2);
-        laud.add(nupud[12], 0, 3);
-        laud.add(nupud[13], 1, 3);
-        laud.add(nupud[14], 2, 3);
-        laud.add(nupud[15], 3, 3);
+
+        //Laua välimus
         laud.setPadding(new Insets(8));
         laud.setVgap(8);
         laud.setHgap(8);
         laud.setStyle("-fx-base: rgb(145,145,145);");
-        laud.add(sega, 0, 4);
+        for (int i = 0; i <4 ; i++) {
+            ColumnConstraints col = new ColumnConstraints();
+            col.setHgrow(Priority.ALWAYS);
+            col.setFillWidth(true);
+            col.setMinWidth(50);
+            laud.getColumnConstraints().add(col);
+        }
+        for (int i = 0; i <5 ; i++) {
+            RowConstraints row = new RowConstraints();
+            row.setVgrow(Priority.ALWAYS);
+            row.setFillHeight(true);
+            row.setMinHeight(50);
+            laud.getRowConstraints().add(row);
+        }
+
+        //Panen nupud listi, et neid oleks lihtsam hallata
+        for (int i = 0; i < 16; i++) {
+            laud.add(nupud[i],i%4,i/4);
+        }
+        laud.add(sega, 0, 4,2,1);
+        sega.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        //Stopper
+        Label aeg= new Label();
+        aeg.setText("00:00");
+        aeg.fontProperty().bind(n1.fontProperty());
+        DateFormat tf = new SimpleDateFormat( "mm:ss" );
+        Timeline tl= new Timeline();
+        tl.setCycleCount( Animation.INDEFINITE );
+        laud.add(aeg,2,4,2,1);
 
 
+
+        //Nuppudele funktsioonide lisamine
         for (Button nupp : nupud) {
             nupp.arm();
+            //nupu välimus ja teksti suurus
             nupp.setStyle("-fx-background-color: rgb(221,221,221);");
-            nupp.setMinSize(50, 50);
-            nupp.setFont(Font.font("Lato", 20));
+            nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            stseen.widthProperty().addListener((observable,oldvalue, newvalue)-> {
+                if((Double) newvalue<laud.getHeight())
+                    nupp.setFont(Font.font("Lato", (Double) newvalue/12));
+            });
+            stseen.heightProperty().addListener((observable,oldvalue, newvalue)-> {
+                if((Double) newvalue<laud.getWidth())
+                    nupp.setFont(Font.font("Lato", (Double) newvalue/12));
+            });
             nupp.setOnAction(actionEvent -> {
+                //Klikkimisel
+                //Proovib mängu alustada
+                if (!käib&&segatud) {
+                    long algus=System.currentTimeMillis();
+                    tl.getKeyFrames().add(
+                            new KeyFrame(
+                                    Duration.millis( 500),
+                                    event -> {
+                                        aeg.setText(tf.format(System.currentTimeMillis()-algus));
+                                    }
+                            ));
+                    tl.play();
+                    käib=true;
+                    sega.setDisable(true);
+                }
+                //Liigutamised
                 if (GridPane.getRowIndex(nupp).equals(GridPane.getRowIndex(n16)) &&
                         GridPane.getColumnIndex(nupp) - 1 == GridPane.getColumnIndex(n16)) {
                     Integer temp = GridPane.getColumnIndex(nupp);
@@ -95,21 +144,42 @@ public class Laud extends Application {
                     GridPane.setRowIndex(nupp, GridPane.getRowIndex(n16));
                     GridPane.setRowIndex(n16, temp);
                 }
+                //Lõpp
+                if(onLahendatud(nupud)){
+                    tl.stop();
+                    sega.setDisable(false);
+                }
             });
-            n16.setStyle("-fx-background-color: rgb(145,145,145);");
-            sega.setOnMouseClicked(mouseEvent -> sega(nupud));
-
+        }
+        n16.setStyle("-fx-background-color: rgb(145,145,145);");
+        sega.setOnMouseClicked(mouseEvent -> {
+            aeg.setText("00:00");
+            segatud=false;
+            käib=false;
+            //segamine tähendab, et arvuti klõpustab 100000 juhsliku nuppu.
+            for (int i = 0; i <100000 ; i++) {
+                int juhuslik = (int) (Math.random()*16);
+                nupud[juhuslik].fire();}
+            segatud=true;
+        });
 
             peaLava.setTitle("15 Kivi");
             peaLava.setScene(stseen);
             peaLava.show();
+            peaLava.setMinHeight(350);
+            peaLava.setMinWidth(280);
         }
-    }
-    private void sega(Button[] nupud) {
-        for (int i = 0; i <1000 ; i++) {
-            int juhuslik = (int) (Math.random()*16);
-            nupud[juhuslik].fire();
+
+
+    private boolean onLahendatud(Button[] nupud) {
+        boolean lahendatud=true;
+        for (int i = 0; i < 16; i++) {
+            if ((GridPane.getRowIndex(nupud[i])!=i/4 ) || (GridPane.getColumnIndex(nupud[i])!= i%4)) {
+                lahendatud=false;
+                break;}
+
         }
+        return lahendatud;
     }
 }
 
