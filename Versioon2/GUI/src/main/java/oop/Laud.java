@@ -1,3 +1,5 @@
+package oop;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -28,7 +30,7 @@ public class Laud extends Application {
     @Override
     public void start(Stage peaLava) {
 
-        //Laud ja kivid
+        //oop.Laud ja kivid
         GridPane laud = new GridPane();
         Scene stseen = new Scene(laud);
         peaLava.setScene(stseen);
