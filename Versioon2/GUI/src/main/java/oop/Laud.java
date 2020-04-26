@@ -38,15 +38,15 @@ public class Laud extends Application {
         Scene stseen = new Scene(laud);
         peaLava.setScene(stseen);
         peaLava.sizeToScene();
-        Button n1 = new Button("1");
-        Button n2 = new Button("2");
-        Button n3 = new Button("3");
-        Button n4 = new Button("4");
-        Button n5 = new Button("5");
-        Button n6 = new Button("6");
-        Button n7 = new Button("7");
-        Button n8 = new Button("8");
-        Button n9 = new Button("9");
+        Button n1 = new Button(" 1 ");
+        Button n2 = new Button(" 2 ");
+        Button n3 = new Button(" 3 ");
+        Button n4 = new Button(" 4 ");
+        Button n5 = new Button(" 5 ");
+        Button n6 = new Button(" 6 ");
+        Button n7 = new Button(" 7 ");
+        Button n8 = new Button(" 8 ");
+        Button n9 = new Button(" 9 ");
         Button n10 = new Button("10");
         Button n11 = new Button("11");
         Button n12 = new Button("12");
@@ -105,11 +105,11 @@ public class Laud extends Application {
             nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             stseen.widthProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getHeight())
-                    nupp.setFont(Font.font("Lato", 8*Math.log((double) newvalue)-35));
+                    nupp.setFont(Font.font("Lato", (double) newvalue/12));
             });
             stseen.heightProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getWidth())
-                    nupp.setFont(Font.font("Lato",  8*Math.log((double) newvalue)-35));
+                    nupp.setFont(Font.font("Lato",  (double) newvalue/12));
             });
             nupp.setOnAction(actionEvent -> {
                 //Klikkimisel
