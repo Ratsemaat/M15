@@ -25,7 +25,7 @@ import static javafx.scene.paint.Color.rgb;
 public class Laud extends Application {
     private static  boolean segatud =false;
     private static boolean käib = false;
-    private static boolean noolte_loogika = true;
+    private static boolean noolte_loogika = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -105,11 +105,11 @@ public class Laud extends Application {
             nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             stseen.widthProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getHeight())
-                    nupp.setFont(Font.font("Lato", (Double) newvalue / 14));
+                    nupp.setFont(Font.font("Lato", (Double) newvalue / 16));
             });
             stseen.heightProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getWidth())
-                    nupp.setFont(Font.font("Lato", (Double) newvalue / 14));
+                    nupp.setFont(Font.font("Lato", (Double) newvalue / 16));
             });
             nupp.setOnAction(actionEvent -> {
                 //Klikkimisel
