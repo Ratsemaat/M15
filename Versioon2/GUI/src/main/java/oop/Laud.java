@@ -25,6 +25,7 @@ import static javafx.scene.paint.Color.rgb;
 public class Laud extends Application {
     private static  boolean segatud =false;
     private static boolean käib = false;
+    private static boolean noolte_loogika = true;
 
     public static void main(String[] args) {
         launch(args);
@@ -102,28 +103,28 @@ public class Laud extends Application {
             //nupu välimus ja teksti suurus
             nupp.setStyle("-fx-background-color: rgb(221,221,221);");
             nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            stseen.widthProperty().addListener((observable,oldvalue, newvalue)-> {
-                if((Double) newvalue<laud.getHeight())
-                    nupp.setFont(Font.font("Lato", (Double) newvalue/12));
+            stseen.widthProperty().addListener((observable, oldvalue, newvalue) -> {
+                if ((Double) newvalue < laud.getHeight())
+                    nupp.setFont(Font.font("Lato", (Double) newvalue / 12));
             });
-            stseen.heightProperty().addListener((observable,oldvalue, newvalue)-> {
-                if((Double) newvalue<laud.getWidth())
-                    nupp.setFont(Font.font("Lato", (Double) newvalue/12));
+            stseen.heightProperty().addListener((observable, oldvalue, newvalue) -> {
+                if ((Double) newvalue < laud.getWidth())
+                    nupp.setFont(Font.font("Lato", (Double) newvalue / 12));
             });
             nupp.setOnAction(actionEvent -> {
                 //Klikkimisel
                 //Proovib mängu alustada
-                if (!käib&&segatud) {
-                    long algus=System.currentTimeMillis();
+                if (!käib && segatud) {
+                    long algus = System.currentTimeMillis();
                     tl.getKeyFrames().add(
                             new KeyFrame(
-                                    Duration.millis( 500),
+                                    Duration.millis(500),
                                     event -> {
-                                        aeg.setText(tf.format(System.currentTimeMillis()-algus));
+                                        aeg.setText(tf.format(System.currentTimeMillis() - algus));
                                     }
                             ));
                     tl.play();
-                    käib=true;
+                    käib = true;
                     sega.setDisable(true);
                 }
                 //Liigutamised
@@ -149,18 +150,20 @@ public class Laud extends Application {
                     GridPane.setRowIndex(n16, temp);
                 }
                 //Lõpp
-                if(onLahendatud(nupud)){
+                if (onLahendatud(nupud)) {
                     tl.stop();
                     sega.setDisable(false);
                 }
             });
 
-            nupp.setOnKeyPressed(KeyEvent->{
+            nupp.setOnKeyPressed(KeyEvent -> {
+                //Klaviatuuri (nooltega liikumise) funktsioon
 
-                if (KeyEvent.getCode()== KeyCode.UP&&
-                        GridPane.getRowIndex(n16)  != 0) {
-                    for (Button button:nupud) {
-                        if (GridPane.getColumnIndex(button)==GridPane.getColumnIndex(n16) &&
+                if ((KeyEvent.getCode() == KeyCode.UP && noolte_loogika) ||
+                        (KeyEvent.getCode() == KeyCode.DOWN && !noolte_loogika) &&
+                                GridPane.getRowIndex(n16) != 0) {
+                    for (Button button : nupud) {
+                        if (GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) &&
                                 GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) - 1) {
                             GridPane.setRowIndex(button, GridPane.getRowIndex(n16));
                             GridPane.setRowIndex(n16, GridPane.getRowIndex(n16) - 1);
@@ -168,9 +171,10 @@ public class Laud extends Application {
                         }
                     }
 
-                }else if (KeyEvent.getCode()== KeyCode.DOWN&&
-                        GridPane.getRowIndex(n16)  != 3) {
-                    for (Button button:nupud) {
+                } else if ((KeyEvent.getCode() == KeyCode.DOWN && noolte_loogika) ||
+                        (KeyEvent.getCode() == KeyCode.UP && !noolte_loogika) &&
+                                GridPane.getRowIndex(n16) != 3) {
+                    for (Button button : nupud) {
                         if (GridPane.getColumnIndex(button).equals(GridPane.getColumnIndex(n16)) &&
                                 GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) + 1) {
                             GridPane.setRowIndex(button, GridPane.getRowIndex(n16));
@@ -178,9 +182,10 @@ public class Laud extends Application {
                             break;
                         }
                     }
-                } else if (KeyEvent.getCode()== KeyCode.LEFT &&
-                        GridPane.getColumnIndex(n16)  != 0) {
-                    for (Button button:nupud) {
+                } else if ((KeyEvent.getCode() == KeyCode.LEFT && noolte_loogika) ||
+                        (KeyEvent.getCode() == KeyCode.RIGHT && !noolte_loogika) &&
+                                GridPane.getColumnIndex(n16) != 0) {
+                    for (Button button : nupud) {
                         if (GridPane.getRowIndex(button).equals(GridPane.getRowIndex(n16)) &&
                                 GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) - 1) {
                             GridPane.setColumnIndex(button, GridPane.getColumnIndex(n16));
@@ -188,8 +193,9 @@ public class Laud extends Application {
                             break;
                         }
                     }
-                } else if (KeyEvent.getCode()== KeyCode.RIGHT&&
-                        GridPane.getColumnIndex(n16)  != 3) {
+                } else if ((KeyEvent.getCode() == KeyCode.RIGHT && noolte_loogika) ||
+                        (KeyEvent.getCode() == KeyCode.LEFT && !noolte_loogika) &&
+                                GridPane.getColumnIndex(n16) != 3) {
                     for (Button button : nupud) {
                         if (GridPane.getRowIndex(button).equals(GridPane.getRowIndex(n16)) &&
                                 GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) + 1) {
@@ -200,13 +206,14 @@ public class Laud extends Application {
                     }
                 }
                 //Lõpp
-                if(onLahendatud(nupud)){
+                if (onLahendatud(nupud)) {
                     tl.stop();
                     sega.setDisable(false);
                 }
             });
-
         }
+
+
         n16.setStyle("-fx-background-color: rgb(145,145,145);");
         sega.setOnMouseClicked(mouseEvent -> {
             aeg.setText("00:00");
