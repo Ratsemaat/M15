@@ -105,11 +105,11 @@ public class Laud extends Application {
             nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             stseen.widthProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getHeight())
-                    nupp.setFont(Font.font("Lato", (Double) newvalue / 12));
+                    nupp.setFont(Font.font("Lato", (Double) newvalue / 16));
             });
             stseen.heightProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getWidth())
-                    nupp.setFont(Font.font("Lato", (Double) newvalue / 12));
+                    nupp.setFont(Font.font("Lato", (Double) newvalue / 16));
             });
             nupp.setOnAction(actionEvent -> {
                 //Klikkimisel
@@ -158,20 +158,6 @@ public class Laud extends Application {
 
             nupp.setOnKeyPressed(KeyEvent -> {
                 //Klaviatuuri (nooltega liikumise) funktsioon
-
-                if (!käib && segatud) {
-                    long algus = System.currentTimeMillis();
-                    tl.getKeyFrames().add(
-                            new KeyFrame(
-                                    Duration.millis(500),
-                                    event -> {
-                                        aeg.setText(tf.format(System.currentTimeMillis() - algus));
-                                    }
-                            ));
-                    tl.play();
-                    käib = true;
-                    sega.setDisable(true);
-                }
 
                 if ((KeyEvent.getCode() == KeyCode.UP && noolte_loogika) ||
                         (KeyEvent.getCode() == KeyCode.DOWN && !noolte_loogika) &&
