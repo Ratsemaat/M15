@@ -25,7 +25,7 @@ import static javafx.scene.paint.Color.rgb;
 public class Laud extends Application {
     private static  boolean segatud =false;
     private static boolean käib = false;
-    private static boolean noolte_loogika = false;
+    private static boolean noolte_loogika = true;
 
     public static void main(String[] args) {
         launch(args);
@@ -158,6 +158,20 @@ public class Laud extends Application {
 
             nupp.setOnKeyPressed(KeyEvent -> {
                 //Klaviatuuri (nooltega liikumise) funktsioon
+
+                if (!käib && segatud) {
+                    long algus = System.currentTimeMillis();
+                    tl.getKeyFrames().add(
+                            new KeyFrame(
+                                    Duration.millis(500),
+                                    event -> {
+                                        aeg.setText(tf.format(System.currentTimeMillis() - algus));
+                                    }
+                            ));
+                    tl.play();
+                    käib = true;
+                    sega.setDisable(true);
+                }
 
                 if ((KeyEvent.getCode() == KeyCode.UP && noolte_loogika) ||
                         (KeyEvent.getCode() == KeyCode.DOWN && !noolte_loogika) &&
