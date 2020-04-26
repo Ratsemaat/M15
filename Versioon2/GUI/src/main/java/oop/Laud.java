@@ -164,37 +164,45 @@ public class Laud extends Application {
                                 GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) - 1) {
                             GridPane.setRowIndex(button, GridPane.getRowIndex(n16));
                             GridPane.setRowIndex(n16, GridPane.getRowIndex(n16) - 1);
-                            System.out.println("leitud!");
+                            break;
                         }
                     }
 
                 }else if (KeyEvent.getCode()== KeyCode.DOWN&&
                         GridPane.getRowIndex(n16)  != 3) {
                     for (Button button:nupud) {
-                        if (GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) &&
+                        if (GridPane.getColumnIndex(button).equals(GridPane.getColumnIndex(n16)) &&
                                 GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) + 1) {
                             GridPane.setRowIndex(button, GridPane.getRowIndex(n16));
                             GridPane.setRowIndex(n16, GridPane.getRowIndex(n16) + 1);
+                            break;
                         }
                     }
                 } else if (KeyEvent.getCode()== KeyCode.LEFT &&
                         GridPane.getColumnIndex(n16)  != 0) {
                     for (Button button:nupud) {
-                        if (GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) &&
+                        if (GridPane.getRowIndex(button).equals(GridPane.getRowIndex(n16)) &&
                                 GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) - 1) {
                             GridPane.setColumnIndex(button, GridPane.getColumnIndex(n16));
                             GridPane.setColumnIndex(n16, GridPane.getColumnIndex(n16) - 1);
+                            break;
                         }
                     }
                 } else if (KeyEvent.getCode()== KeyCode.RIGHT&&
                         GridPane.getColumnIndex(n16)  != 3) {
                     for (Button button : nupud) {
-                        if (GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) &&
+                        if (GridPane.getRowIndex(button).equals(GridPane.getRowIndex(n16)) &&
                                 GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) + 1) {
                             GridPane.setColumnIndex(button, GridPane.getColumnIndex(n16));
                             GridPane.setColumnIndex(n16, GridPane.getColumnIndex(n16) + 1);
+                            break;
                         }
                     }
+                }
+                //Lõpp
+                if(onLahendatud(nupud)){
+                    tl.stop();
+                    sega.setDisable(false);
                 }
             });
 
