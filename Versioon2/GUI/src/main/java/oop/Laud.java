@@ -8,6 +8,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -152,6 +154,50 @@ public class Laud extends Application {
                     sega.setDisable(false);
                 }
             });
+
+            nupp.setOnKeyPressed(KeyEvent->{
+
+                if (KeyEvent.getCode()== KeyCode.UP&&
+                        GridPane.getRowIndex(n16)  != 0) {
+                    for (Button button:nupud) {
+                        if (GridPane.getColumnIndex(button)==GridPane.getColumnIndex(n16) &&
+                                GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) - 1) {
+                            GridPane.setRowIndex(button, GridPane.getRowIndex(n16));
+                            GridPane.setRowIndex(n16, GridPane.getRowIndex(n16) - 1);
+                            System.out.println("leitud!");
+                        }
+                    }
+
+                }else if (KeyEvent.getCode()== KeyCode.DOWN&&
+                        GridPane.getRowIndex(n16)  != 3) {
+                    for (Button button:nupud) {
+                        if (GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) &&
+                                GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) + 1) {
+                            GridPane.setRowIndex(button, GridPane.getRowIndex(n16));
+                            GridPane.setRowIndex(n16, GridPane.getRowIndex(n16) + 1);
+                        }
+                    }
+                } else if (KeyEvent.getCode()== KeyCode.LEFT &&
+                        GridPane.getColumnIndex(n16)  != 0) {
+                    for (Button button:nupud) {
+                        if (GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) &&
+                                GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) - 1) {
+                            GridPane.setColumnIndex(button, GridPane.getColumnIndex(n16));
+                            GridPane.setColumnIndex(n16, GridPane.getColumnIndex(n16) - 1);
+                        }
+                    }
+                } else if (KeyEvent.getCode()== KeyCode.RIGHT&&
+                        GridPane.getColumnIndex(n16)  != 3) {
+                    for (Button button : nupud) {
+                        if (GridPane.getRowIndex(button) == GridPane.getRowIndex(n16) &&
+                                GridPane.getColumnIndex(button) == GridPane.getColumnIndex(n16) + 1) {
+                            GridPane.setColumnIndex(button, GridPane.getColumnIndex(n16));
+                            GridPane.setColumnIndex(n16, GridPane.getColumnIndex(n16) + 1);
+                        }
+                    }
+                }
+            });
+
         }
         n16.setStyle("-fx-background-color: rgb(145,145,145);");
         sega.setOnMouseClicked(mouseEvent -> {
