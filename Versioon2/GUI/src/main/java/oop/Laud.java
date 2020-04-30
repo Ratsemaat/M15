@@ -248,6 +248,10 @@ public class Laud extends Application {
     }
 
 
+    /**Meetod onLahendatud võitab siendiks nuppude massivi ja tagastab, kas mäng on lahendatud
+     * @param nupud Massiiv nuppudest.
+     * @return tõeväärtus
+     */
     private boolean onLahendatud(Button[] nupud) {
         boolean lahendatud=true;
         for (int i = 0; i < 16; i++) {
