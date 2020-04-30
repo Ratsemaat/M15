@@ -15,8 +15,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,7 +28,7 @@ import static javafx.scene.paint.Color.rgb;
 public class Laud extends Application {
     private static  boolean segatud =false;
     private static boolean käib = false;
-    private static boolean noolte_loogika = true;
+    private static boolean noolte_loogika = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -33,7 +36,7 @@ public class Laud extends Application {
     @Override
     public void start(Stage peaLava) {
 
-        //oop.Laud ja kivid
+        //oop.Laua loomine ja nuppude loomine.
         GridPane laud = new GridPane();
         Scene stseen = new Scene(laud);
         peaLava.setScene(stseen);
@@ -89,7 +92,7 @@ public class Laud extends Application {
         //Stopper
         Label aeg= new Label();
         aeg.setText("00:00");
-        aeg.fontProperty().bind(n1.fontProperty());
+        aeg.fontProperty().bind(n1.fontProperty());//n1 on dünaamiline suurus, mis reguleerib ennast akna suurusega.
         DateFormat tf = new SimpleDateFormat( "mm:ss" );
         Timeline tl= new Timeline();
         tl.setCycleCount( Animation.INDEFINITE );
@@ -103,6 +106,7 @@ public class Laud extends Application {
             //nupu välimus ja teksti suurus
             nupp.setStyle("-fx-background-color: rgb(221,221,221);");
             nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            //Dünaamilise suurusega tekst.
             stseen.widthProperty().addListener((observable, oldvalue, newvalue) -> {
                 if ((Double) newvalue < laud.getHeight())
                     nupp.setFont(Font.font("Lato", (double) newvalue/12));
@@ -111,23 +115,26 @@ public class Laud extends Application {
                 if ((Double) newvalue < laud.getWidth())
                     nupp.setFont(Font.font("Lato",  (double) newvalue/12));
             });
+
+            //Mingile nupule vajutades...
             nupp.setOnAction(actionEvent -> {
-                //Klikkimisel
-                //Proovib mängu alustada
+                //Kui mäng veel ei käi ja laud on segatud, siis alustab mängu.
                 if (!käib && segatud) {
                     long algus = System.currentTimeMillis();
                     tl.getKeyFrames().add(
                             new KeyFrame(
                                     Duration.millis(500),
                                     event -> {
-                                        aeg.setText(tf.format(System.currentTimeMillis() - algus));
+                                        aeg.setText(tf.format(System.currentTimeMillis()-algus));
                                     }
                             ));
-                    tl.play();
+                    tl.play();//alustab taimeri.
                     käib = true;
                     sega.setDisable(true);
                 }
-                //Liigutamised
+
+                //Liigutamised. Nupp liigub, kui tema kõrval on tühi koht. Sel juhul liigub selles suunas, kus on tema
+                // suhtes tühi koht, kas üles, alla, vasakule või paremal.
                 if (GridPane.getRowIndex(nupp).equals(GridPane.getRowIndex(n16)) &&
                         GridPane.getColumnIndex(nupp) - 1 == GridPane.getColumnIndex(n16)) {
                     Integer temp = GridPane.getColumnIndex(nupp);
@@ -149,16 +156,19 @@ public class Laud extends Application {
                     GridPane.setRowIndex(nupp, GridPane.getRowIndex(n16));
                     GridPane.setRowIndex(n16, temp);
                 }
-                //Lõpp
-                if (onLahendatud(nupud)) {
+                //Peale liigutamist kontrollib kas mäng on lahendud. Kui on siis peatab taimeri ja lubab alustada uue
+                // mängu alustamise.
+                if (onLahendatud(nupud)&&segatud) {
+                    String[] minsec = aeg.getText().split(":");
+                    if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
                 }
+
             });
 
             nupp.setOnKeyPressed(KeyEvent -> {
                 //Klaviatuuri (nooltega liikumise) funktsioon
-
                 if (!käib && segatud) {
                     long algus = System.currentTimeMillis();
                     tl.getKeyFrames().add(
@@ -220,24 +230,26 @@ public class Laud extends Application {
                     }
                 }
                 //Lõpp
-                if (onLahendatud(nupud)) {
+                if (onLahendatud(nupud)&&segatud) {
+                    String[] minsec = aeg.getText().split(":");
+                    if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
                 }
             });
         }
-
-
         n16.setStyle("-fx-background-color: rgb(145,145,145);");
+        //segamise nupule vajutamisel...
         sega.setOnMouseClicked(mouseEvent -> {
-            aeg.setText("00:00");
-            segatud=false;
-            käib=false;
+            aeg.setText("00:00");//Aeg nulli
+            segatud=false;//Et segamise käigus ei hakkaks mäng pihta.
             //segamine tähendab, et arvuti klõpustab 100000 juhsliku nuppu.
-            for (int i = 0; i <100000 ; i++) {
+            for (int i = 0; i < 100000 ; i++) {
                 int juhuslik = (int) (Math.random()*16);
                 nupud[juhuslik].fire();}
+            //Ettevalmistused mängu minekuks.
             segatud=true;
+            käib=false;
         });
 
         peaLava.setTitle("15 Kivi");
