@@ -5,21 +5,30 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.graalvm.compiler.nodes.java.ClassIsAssignableFromNode;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -28,13 +37,14 @@ import static javafx.scene.paint.Color.rgb;
 public class Laud extends Application {
     private static  boolean segatud =false;
     private static boolean käib = false;
-    private static boolean noolte_loogika = false;
+    private static boolean noolte_loogika = true;
+    private static boolean OnKorraküsitud=false;
 
     public static void main(String[] args) {
         launch(args);
     }
     @Override
-    public void start(Stage peaLava) {
+    public void start(Stage peaLava) throws FileNotFoundException {
 
         //oop.Laua loomine ja nuppude loomine.
         GridPane laud = new GridPane();
@@ -60,6 +70,21 @@ public class Laud extends Application {
         Button sega = new Button("Sega");
         sega.fontProperty().bind(n1.fontProperty());
         Button[] nupud = new Button[]{n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16};
+
+        MenuItem noolteLoogikaNupp = new MenuItem("Noolte loogika teistsuguseks");
+        MenuItem edetabeliNupp = new MenuItem("Edetabel");
+
+        FileInputStream input = new FileInputStream("./hammasratas.png");
+        Image image = new Image(input);
+        ImageView imageView = new ImageView(image);
+        imageView.setPreserveRatio(true);
+        MenuButton menuNupp = new MenuButton("", imageView, noolteLoogikaNupp, edetabeliNupp);
+        //menuNupp.setDisable(true);
+
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Kinnitus edetabeli jaoks");
+        dialog.setHeaderText("Edetabelisse lisamiseks");
+        dialog.setContentText("Sisestage oma nimi/hüüdnimi:");
 
 
         //Laua välimus
@@ -97,7 +122,7 @@ public class Laud extends Application {
         Timeline tl= new Timeline();
         tl.setCycleCount( Animation.INDEFINITE );
         laud.add(aeg,2,4,2,1);
-
+        laud.add(menuNupp,3,4,2,1 );
 
 
         //Nuppudele funktsioonide lisamine
@@ -108,12 +133,17 @@ public class Laud extends Application {
             nupp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             //Dünaamilise suurusega tekst.
             stseen.widthProperty().addListener((observable, oldvalue, newvalue) -> {
-                if ((Double) newvalue < laud.getHeight())
-                    nupp.setFont(Font.font("Lato", (double) newvalue/12));
+                if ((Double) newvalue < laud.getHeight()) {
+                    nupp.setFont(Font.font("Lato", (double) newvalue / 12));
+                    imageView.setFitWidth((double) newvalue/8);
+                }
             });
             stseen.heightProperty().addListener((observable, oldvalue, newvalue) -> {
-                if ((Double) newvalue < laud.getWidth())
-                    nupp.setFont(Font.font("Lato",  (double) newvalue/12));
+                if ((Double) newvalue < laud.getWidth()) {
+                    nupp.setFont(Font.font("Lato", (double) newvalue / 12));
+                    imageView.setFitHeight((double) newvalue / 8);
+                }
+
             });
 
             //Mingile nupule vajutades...
@@ -131,6 +161,7 @@ public class Laud extends Application {
                     tl.play();//alustab taimeri.
                     käib = true;
                     sega.setDisable(true);
+                    OnKorraküsitud=false;
                 }
 
                 //Liigutamised. Nupp liigub, kui tema kõrval on tühi koht. Sel juhul liigub selles suunas, kus on tema
@@ -163,6 +194,13 @@ public class Laud extends Application {
                     if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
+                    if (!OnKorraküsitud) {
+                        Optional<String> result = dialog.showAndWait();
+                        if (result.isPresent() && !result.get().equals("")) {
+                            lisaEdetabelisse(minsec, result.get());
+                            OnKorraküsitud = true;
+                        }
+                    }
                 }
 
             });
@@ -181,6 +219,7 @@ public class Laud extends Application {
                     tl.play();
                     käib = true;
                     sega.setDisable(true);
+                    OnKorraküsitud=false;
                 }
 
                 if ((KeyEvent.getCode() == KeyCode.UP && noolte_loogika) ||
@@ -235,6 +274,13 @@ public class Laud extends Application {
                     if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
+                    if (!OnKorraküsitud) {
+                        Optional<String> result = dialog.showAndWait();
+                        if (result.isPresent() && !result.get().equals("")) {
+                            lisaEdetabelisse(minsec, result.get());
+                            OnKorraküsitud = true;
+                        }
+                    }
                 }
             });
         }
@@ -251,12 +297,93 @@ public class Laud extends Application {
             segatud=true;
             käib=false;
         });
+        //menüü nupule vajutades...
+        menuNupp.setOnMouseEntered(event -> {
+            menuNupp.setDisable(false);
+        });
+        menuNupp.setOnMouseExited(event -> menuNupp.setDisable(false));
+
+        noolteLoogikaNupp.setOnAction(event -> {
+            if (noolte_loogika){
+                noolte_loogika=false;
+            }
+            else {
+                noolte_loogika=true;
+            }
+        });
+
+        edetabeliNupp.setOnAction(event -> näitaEdetabelit(new Stage()));
 
         peaLava.setTitle("15 Kivi");
         peaLava.setScene(stseen);
         peaLava.show();
         peaLava.setMinHeight(350);
         peaLava.setMinWidth(280);
+    }
+
+    private void lisaEdetabelisse(String[] minsec, String nimi) {
+        try {
+            File edetabel = new File("edetabel.txt");
+            if (edetabel.createNewFile() || edetabel.length()==0) {
+                //Loob faili ja kirjutab sinna.
+                kirjutaFailiNullist(minsec,nimi);
+            } else { //Lisab eksisteerivasse faili vajaliku rea juurde.
+                kirjutaFailiJuurde(minsec,edetabel,nimi);
+            }
+        } catch (IOException e) {
+            System.out.println("Midagi läks valesti.");
+            e.printStackTrace();
+        }
+        //Näitaedetabelit.
+        näitaEdetabelit(new Stage());
+    }
+
+    private void näitaEdetabelit(Stage stage) {
+        TableView table = new TableView();
+        Scene scene = new Scene(new Group());
+        stage.setTitle("Edetabel");
+        stage.setWidth(300);
+        stage.setHeight(500);
+
+        final Label label = new Label("Edetabel");
+        label.setFont(new Font("Lato", 20));
+
+        table.setEditable(true);
+
+        TableColumn nimi = new TableColumn("Mängja nimi");
+        nimi.setCellValueFactory(new PropertyValueFactory<>("nimi"));
+        nimi.setMinWidth(100);
+
+        TableColumn aeg = new TableColumn("aeg");
+        aeg.setCellValueFactory(new PropertyValueFactory<>("aeg"));
+        aeg.setMinWidth(100);
+
+
+        table.getColumns().addAll(nimi, aeg);
+
+        try {
+            File myObj = new File("edetabel.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                String[] tükid= data.split(":");
+                table.getItems().add(new Isik(tükid[2],tükid[0]+":"+tükid[1]));
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Faili pole ei leita.");
+        }
+
+
+        final VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(10, 0, 0, 10));
+        vbox.getChildren().addAll(label, table);
+
+        ((Group) scene.getRoot()).getChildren().addAll(vbox);
+
+        stage.setScene(scene);
+        stage.show();
     }
 
 
@@ -274,5 +401,52 @@ public class Laud extends Application {
         }
         return lahendatud;
     }
+
+    //Faili kirjutamised edetabeli jaoks.
+    private void kirjutaFailiNullist(String[] mängija_aeg, String mängijaNimi) {
+        //Loob faili. Lisab sinna raamistiku ning esimese mängija tulemuse koos kasutaja poolt antud nimega.
+        try {
+            FileWriter kirjutaja = new FileWriter("edetabel.txt");
+            PrintWriter printWriter = new PrintWriter(kirjutaja);
+            printWriter.print(mängija_aeg[0]+":"+mängija_aeg[1]+":");
+            printWriter.printf("%s \n", mängijaNimi);
+            kirjutaja.close();
+            printWriter.close();
+        } catch (IOException e) {
+            System.out.println("Midagi läks valesti. Kontakteeru programmeerijaga!");
+            e.printStackTrace();
+        }
+    }
+
+    private void kirjutaFailiJuurde(String[] uus_aeg,File edetabel, String mängijaNimi){
+        //Avab ette antud faili, otsib õige rea ning lisab sinna mängija tulemuse koos ette antud ajaga.
+        try (Scanner sc = new Scanner(edetabel, "UTF-8")) {
+            Path path = Paths.get("edetabel.txt");
+            int ridadearv = (int) Files.lines(path).count();
+            int reaLuger = 1;
+            int mängija_aeg=Integer.parseInt(uus_aeg[0])*60+Integer.parseInt(uus_aeg[1]);
+            //Otsib õige rea võrreldes olemasolevaid aegu lisatava ajaga.
+            while (sc.hasNextLine()) {
+                String rida = sc.nextLine();
+                if (ridadearv>reaLuger) {
+                    String[] tükid = rida.split(":");
+                    int aeg = Integer.parseInt(tükid[0])*60+Integer.parseInt(tükid[1]);
+                    if (aeg>mängija_aeg) break;
+                }
+                reaLuger++;
+            }
+            //Lisab mängija tulemuse koos ajaga õigele reale.
+            List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+
+            System.out.println(reaLuger);
+            lines.add((reaLuger-1), uus_aeg[0]+":"+uus_aeg[1]+":"+mängijaNimi);
+            Files.write(path, lines, StandardCharsets.UTF_8);
+        }
+
+        catch (IOException e) {
+            System.out.println("Midagi läks valesti. Kontakteeru programmeerijaga!");
+        }
+    }
+
 }
 
