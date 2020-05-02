@@ -25,21 +25,28 @@ public class EdetabeliAken extends Dialog<ButtonType> {
             }else {
                 DialogPane dialogPane = new DialogPane();
                 VBox outer = new VBox();
+                Label metaInf = new Label("  Koht\tAeg(min:sek)\t   Mängija nimi");
                 Button button = new Button("Sulge");
-                setResult(new ButtonType("NO", ButtonBar.ButtonData.LEFT));
+                setResult(new ButtonType("Sulge",ButtonBar.ButtonData.FINISH));
                 button.setOnMousePressed(e -> close());
+                button.translateXProperty().bind(button.prefWidthProperty().divide(-2));
+
                 ListView<Text> inner = new ListView<Text>();
                 Scanner myReader = new Scanner(myObj);
+                int koht = 1;
                 while (myReader.hasNextLine()) {
                     String data = myReader.nextLine();
                     String[] tükid =data.split(":");
                     String aeg = tükid[0]+":"+tükid[1];
+                    if (tükid[0].length()==1)
+                        aeg="0"+aeg;
                     String nimi = tükid[2];
-                    inner.getItems().add(new Text(aeg+"\t"+nimi));
+                    inner.getItems().add(new Text(koht+".\t\t"+aeg+"\t\t"+nimi));
+                    koht++;
                 }
                 myReader.close();
-                inner.setMaxHeight(80);
-                outer.getChildren().addAll(button, inner);
+                inner.setMaxHeight(100);
+                outer.getChildren().addAll(metaInf,inner,button);
                 dialogPane.setContent(outer);
                 this.setDialogPane(dialogPane);
             }

@@ -73,10 +73,11 @@ public class Laud extends Application {
 
         MenuItem noolteLoogikaNupp = new MenuItem("Noolte loogika teistsuguseks");
         MenuItem edetabeliNupp = new MenuItem("Edetabel");
+        MenuItem tuhjendaEdetabel = new MenuItem("Tühjenda edetabel");
 
         ImageView imageView = new ImageView(new Image(new FileInputStream("hammasratas.png"))); //Pildi au ja kuulsus : https://www.flaticon.com/.
         imageView.setPreserveRatio(true);
-        MenuButton menuNupp = new MenuButton("", imageView, noolteLoogikaNupp, edetabeliNupp);
+        MenuButton menuNupp = new MenuButton("", imageView, noolteLoogikaNupp, edetabeliNupp,tuhjendaEdetabel);
 
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Kinnitus edetabeli jaoks");
@@ -159,6 +160,7 @@ public class Laud extends Application {
                     käib = true;
                     sega.setDisable(true);
                     OnKorraküsitud=false;
+                    menuNupp.setDisable(true);
                 }
 
                 //Liigutamised. Nupp liigub, kui tema kõrval on tühi koht. Sel juhul liigub selles suunas, kus on tema
@@ -191,6 +193,7 @@ public class Laud extends Application {
                     if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
+                    menuNupp.setDisable(false);
                     if (!OnKorraküsitud) {
                         Optional<String> result = dialog.showAndWait();
                         if (result.isPresent() && !result.get().equals("")) {
@@ -217,6 +220,7 @@ public class Laud extends Application {
                     käib = true;
                     sega.setDisable(true);
                     OnKorraküsitud=false;
+                    menuNupp.setDisable(true);
                 }
 
                 if ((KeyEvent.getCode() == KeyCode.UP && noolte_loogika) ||
@@ -271,6 +275,7 @@ public class Laud extends Application {
                     if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
+                    menuNupp.setDisable(false);
                     if (!OnKorraküsitud) {
                         Optional<String> result = dialog.showAndWait();
                         if (result.isPresent() && !result.get().equals("")) {
@@ -310,6 +315,11 @@ public class Laud extends Application {
             File edetabeliFail = new File("edetabel.txt");
             if (edetabeliFail.exists()&&edetabeliFail.length()>3)
                 edetabeliAken.showAndWait();
+        });
+        tuhjendaEdetabel.setOnAction(event -> {
+            File edetabeliFail = new File("edetabel.txt");
+            if (edetabeliFail.exists())
+                edetabeliFail.delete();
         });
 
         peaLava.setTitle("15 Kivi");
