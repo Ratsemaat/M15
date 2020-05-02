@@ -74,12 +74,9 @@ public class Laud extends Application {
         MenuItem noolteLoogikaNupp = new MenuItem("Noolte loogika teistsuguseks");
         MenuItem edetabeliNupp = new MenuItem("Edetabel");
 
-        FileInputStream input = new FileInputStream("./hammasratas.png");
-        Image image = new Image(input);
-        ImageView imageView = new ImageView(image);
+        ImageView imageView = new ImageView(new Image(new FileInputStream("hammasratas.png"))); //Pildi au ja kuulsus : https://www.flaticon.com/.
         imageView.setPreserveRatio(true);
         MenuButton menuNupp = new MenuButton("", imageView, noolteLoogikaNupp, edetabeliNupp);
-        //menuNupp.setDisable(true);
 
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Kinnitus edetabeli jaoks");
@@ -297,11 +294,7 @@ public class Laud extends Application {
             segatud=true;
             käib=false;
         });
-        //menüü nupule vajutades...
-        menuNupp.setOnMouseEntered(event -> {
-            menuNupp.setDisable(false);
-        });
-        menuNupp.setOnMouseExited(event -> menuNupp.setDisable(false));
+        //menüü nupule liikudes...
 
         noolteLoogikaNupp.setOnAction(event -> {
             if (noolte_loogika){
@@ -312,7 +305,12 @@ public class Laud extends Application {
             }
         });
 
-        edetabeliNupp.setOnAction(event -> näitaEdetabelit(new Stage()));
+        edetabeliNupp.setOnAction(event -> {
+            EdetabeliAken edetabeliAken = new EdetabeliAken("edetabel.txt");
+            File edetabeliFail = new File("edetabel.txt");
+            if (edetabeliFail.exists()&&edetabeliFail.length()>3)
+                edetabeliAken.showAndWait();
+        });
 
         peaLava.setTitle("15 Kivi");
         peaLava.setScene(stseen);
@@ -335,55 +333,8 @@ public class Laud extends Application {
             e.printStackTrace();
         }
         //Näitaedetabelit.
-        näitaEdetabelit(new Stage());
-    }
-
-    private void näitaEdetabelit(Stage stage) {
-        TableView table = new TableView();
-        Scene scene = new Scene(new Group());
-        stage.setTitle("Edetabel");
-        stage.setWidth(300);
-        stage.setHeight(500);
-
-        final Label label = new Label("Edetabel");
-        label.setFont(new Font("Lato", 20));
-
-        table.setEditable(true);
-
-        TableColumn nimi = new TableColumn("Mängja nimi");
-        nimi.setCellValueFactory(new PropertyValueFactory<>("nimi"));
-        nimi.setMinWidth(100);
-
-        TableColumn aeg = new TableColumn("aeg");
-        aeg.setCellValueFactory(new PropertyValueFactory<>("aeg"));
-        aeg.setMinWidth(100);
-
-
-        table.getColumns().addAll(nimi, aeg);
-
-        try {
-            File myObj = new File("edetabel.txt");
-            Scanner myReader = new Scanner(myObj);
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                String[] tükid= data.split(":");
-                table.getItems().add(new Isik(tükid[2],tükid[0]+":"+tükid[1]));
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Faili pole ei leita.");
-        }
-
-
-        final VBox vbox = new VBox();
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(label, table);
-
-        ((Group) scene.getRoot()).getChildren().addAll(vbox);
-
-        stage.setScene(scene);
-        stage.show();
+        EdetabeliAken edetabeliAken = new EdetabeliAken("edetabel.txt");
+        edetabeliAken.showAndWait();
     }
 
 
