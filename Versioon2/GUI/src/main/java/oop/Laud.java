@@ -5,40 +5,31 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.graalvm.compiler.nodes.java.ClassIsAssignableFromNode;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Time;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
-import static javafx.scene.paint.Color.rgb;
 
 public class Laud extends Application {
     private static  boolean segatud =false;
     private static boolean käib = false;
     private static boolean noolte_loogika = true;
-    private static boolean OnKorraküsitud=false;
+    private static boolean OnKorraküsitud=false; //Edetabelisse nime lisamise jaoks.
 
     public static void main(String[] args) {
         launch(args);
@@ -71,19 +62,21 @@ public class Laud extends Application {
         sega.fontProperty().bind(n1.fontProperty());
         Button[] nupud = new Button[]{n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16};
 
+        //Menüü nupuvaliku loomine
         MenuItem noolteLoogikaNupp = new MenuItem("Noolte loogika teistsuguseks");
         MenuItem edetabeliNupp = new MenuItem("Edetabel");
         MenuItem tuhjendaEdetabel = new MenuItem("Tühjenda edetabel");
 
+        //Menüü nupu pildi lisamine
         ImageView imageView = new ImageView(new Image(new FileInputStream("hammasratas.png"))); //Pildi au ja kuulsus : https://www.flaticon.com/.
         imageView.setPreserveRatio(true);
         MenuButton menuNupp = new MenuButton("", imageView, noolteLoogikaNupp, edetabeliNupp,tuhjendaEdetabel);
 
+        //Mängu lahendades dialoogikasti moodustamine.
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Kinnitus edetabeli jaoks");
         dialog.setHeaderText("Edetabelisse lisamiseks");
         dialog.setContentText("Sisestage oma nimi/hüüdnimi:");
-
 
         //Laua välimus
         laud.setPadding(new Insets(8));
@@ -144,7 +137,7 @@ public class Laud extends Application {
 
             });
 
-            //Mingile nupule vajutades...
+            //Mingile nupule(kivile) vajutades...
             nupp.setOnAction(actionEvent -> {
                 //Kui mäng veel ei käi ja laud on segatud, siis alustab mängu.
                 if (!käib && segatud) {
@@ -193,8 +186,8 @@ public class Laud extends Application {
                     if(Integer.parseInt(minsec[0])*60 + Integer.parseInt(minsec[1])<4) throw new ViganeAegErind(aeg.getText());
                     tl.stop();
                     sega.setDisable(false);
-                    menuNupp.setDisable(false);
-                    if (!OnKorraküsitud) {
+                    menuNupp.setDisable(false); //Kui mäng on läbi saab ka menüüd kasutada.
+                    if (!OnKorraküsitud) {      //Ja küsib mängija nime, et teda edetabelisse lisada. Kui on ühe korra vastuse saanud, ei küsi rohkem.
                         Optional<String> result = dialog.showAndWait();
                         if (result.isPresent() && !result.get().equals("")) {
                             lisaEdetabelisse(minsec, result.get());
@@ -205,8 +198,11 @@ public class Laud extends Application {
 
             });
 
+            //Klaviatuuri (nooltega liikumise) funktsioon
             nupp.setOnKeyPressed(KeyEvent -> {
-                //Klaviatuuri (nooltega liikumise) funktsioon
+                //Kontrollib analoogselt hiirega vajutamisele, kas mäng on segatud ja käib.
+                //Vastavalt noolte_loogikale määrab, kas noolele vajutamisega liigub tühikoht vajutatud noole suunas
+                // või liigub kõrval olev kivi noolega näidatud suunas.
                 if (!käib && segatud) {
                     long algus = System.currentTimeMillis();
                     tl.getKeyFrames().add(
@@ -276,7 +272,7 @@ public class Laud extends Application {
                     tl.stop();
                     sega.setDisable(false);
                     menuNupp.setDisable(false);
-                    if (!OnKorraküsitud) {
+                    if (!OnKorraküsitud) { //Küsib edetabelisse lisamiseks kasutaja nime (kui lõpetati klahvivajutusega).
                         Optional<String> result = dialog.showAndWait();
                         if (result.isPresent() && !result.get().equals("")) {
                             lisaEdetabelisse(minsec, result.get());
@@ -299,8 +295,9 @@ public class Laud extends Application {
             segatud=true;
             käib=false;
         });
-        //menüü nupule liikudes...
 
+        //Menüü nupuvalik
+        //Noolteloogika muutab hetkeloogika vastupidiseks.
         noolteLoogikaNupp.setOnAction(event -> {
             if (noolte_loogika){
                 noolte_loogika=false;
@@ -310,12 +307,14 @@ public class Laud extends Application {
             }
         });
 
+        //Edetabeli nupule vajutades ilmub edetabel, kui see leidub.
         edetabeliNupp.setOnAction(event -> {
             EdetabeliAken edetabeliAken = new EdetabeliAken("edetabel.txt");
             File edetabeliFail = new File("edetabel.txt");
             if (edetabeliFail.exists()&&edetabeliFail.length()>3)
                 edetabeliAken.showAndWait();
         });
+        //Tühjenda edetabelit nupule vajutades tühjendatakse edetabeli kui edetabelis on midagi.
         tuhjendaEdetabel.setOnAction(event -> {
             File edetabeliFail = new File("edetabel.txt");
             if (edetabeliFail.exists())
@@ -329,6 +328,13 @@ public class Laud extends Application {
         peaLava.setMinWidth(280);
     }
 
+    /**
+     * meetod lisaEdetabelisse võtab sisendiks hetke mängija aja ning sisestatud nime.
+     * Väljastab edetabeli.
+     *
+      * @param minsec Mängija lahendamiseks kulunud aeg formaadis minutid:sekundid.
+     * @param nimi Mängija sisestatud nimi.
+     */
     private void lisaEdetabelisse(String[] minsec, String nimi) {
         try {
             File edetabel = new File("edetabel.txt");
@@ -342,7 +348,7 @@ public class Laud extends Application {
             System.out.println("Midagi läks valesti.");
             e.printStackTrace();
         }
-        //Näitaedetabelit.
+        //Näitab edetabelit.
         EdetabeliAken edetabeliAken = new EdetabeliAken("edetabel.txt");
         edetabeliAken.showAndWait();
     }
@@ -363,7 +369,12 @@ public class Laud extends Application {
         return lahendatud;
     }
 
-    //Faili kirjutamised edetabeli jaoks.
+    /**
+     * Kirjutab andmed faili siis, kui faili eelnevalt ei eksisteeri.
+     *
+     * @param mängija_aeg Mängija etteantud aeg.
+     * @param mängijaNimi Mängija nimi.
+     */
     private void kirjutaFailiNullist(String[] mängija_aeg, String mängijaNimi) {
         //Loob faili. Lisab sinna raamistiku ning esimese mängija tulemuse koos kasutaja poolt antud nimega.
         try {
@@ -379,8 +390,14 @@ public class Laud extends Application {
         }
     }
 
+    /**
+     * Avab ette antud faili, otsib õige rea ning lisab sinna mängija tulemuse koos ette antud ajaga.
+     *
+     * @param uus_aeg mängija hetkeaeg.
+     * @param edetabel edetabeli fail.
+     * @param mängijaNimi mängija nimi.
+     */
     private void kirjutaFailiJuurde(String[] uus_aeg,File edetabel, String mängijaNimi){
-        //Avab ette antud faili, otsib õige rea ning lisab sinna mängija tulemuse koos ette antud ajaga.
         try (Scanner sc = new Scanner(edetabel, "UTF-8")) {
             Path path = Paths.get("edetabel.txt");
             int ridadearv = (int) Files.lines(path).count();

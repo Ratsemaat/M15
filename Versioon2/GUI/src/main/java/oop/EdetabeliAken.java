@@ -13,6 +13,7 @@ public class EdetabeliAken extends Dialog<ButtonType> {
 
     public EdetabeliAken(String tekstifail) {
         super();
+        //Loob tühifaili veateate hoiatuse.
         Alert tühiFail = new Alert(Alert.AlertType.ERROR);
         tühiFail.setTitle("Tekkis viga");
         tühiFail.setHeaderText("Ühtegi mängu pole veel tehtud!");
@@ -21,19 +22,20 @@ public class EdetabeliAken extends Dialog<ButtonType> {
         try {
             File myObj = new File(tekstifail);
             if (myObj.length()<3){
-                tühiFail.show();
+                tühiFail.show(); //Kui fail on tühi, viskab erindi.
             }else {
+                //Koostab edetabeli
                 DialogPane dialogPane = new DialogPane();
                 VBox outer = new VBox();
                 Label metaInf = new Label("  Koht\tAeg(min:sek)\t   Mängija nimi");
+                //Lisab edetabelisse kinni panemis nupu button.
                 Button button = new Button("Sulge");
                 setResult(new ButtonType("Sulge",ButtonBar.ButtonData.FINISH));
                 button.setOnMousePressed(e -> close());
-                button.translateXProperty().bind(button.prefWidthProperty().divide(-2));
-
                 ListView<Text> inner = new ListView<Text>();
                 Scanner myReader = new Scanner(myObj);
                 int koht = 1;
+                //Lisab mängijad edetabelisse.
                 while (myReader.hasNextLine()) {
                     String data = myReader.nextLine();
                     String[] tükid =data.split(":");
@@ -51,7 +53,7 @@ public class EdetabeliAken extends Dialog<ButtonType> {
                 this.setDialogPane(dialogPane);
             }
         } catch (FileNotFoundException e) {
-            tühiFail.showAndWait();
+            tühiFail.showAndWait(); //Kui faili ei leidu, viskab erindi.
         }
     }
 }
